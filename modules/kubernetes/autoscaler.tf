@@ -52,3 +52,15 @@ resource "aws_iam_role_policy" "autoscaler" {
   role   = aws_iam_role.autoscaler.id
   policy = data.aws_iam_policy_document.autoscaler.json
 }
+
+data "aws_iam_policy_document" "assume" {
+  statement {
+    actions   = ["sts:AssumeRoleWithWebIdentity"]
+    resources = [aws_iam_role.autoscaler.arn]
+  }
+}
+
+resource "aws_iam_role_policy" "assume" {
+  role   = aws_iam_role.eks.id
+  policy = data.aws_iam_policy_document.assume.json
+}
