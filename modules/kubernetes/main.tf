@@ -19,3 +19,13 @@ resource "aws_eks_cluster" "eks" {
     endpoint_private_access = false
   }
 }
+
+data "tls_certificate" "eks_oidc_cert" {
+  url = aws_eks_cluster.eks.identity.0.oidc.0.issuer
+}
+
+resource "aws_iam_openid_connect_provider" "eks_oidc" {
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = [for cert in data.tls_certificate.eks_oidc_cert.certificates : cert.sha1_fingerprint if cert.is_ca]
+  url             = aws_eks_cluster.eks.identity.0.oidc.0.issuer
+}

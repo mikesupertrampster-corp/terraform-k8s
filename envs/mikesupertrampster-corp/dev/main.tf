@@ -12,6 +12,7 @@ provider "aws" {
 
 module "kubernetes" {
   source             = "../../../modules//kubernetes"
+  apex_domain        = var.apex_domain
   environment        = var.environment
   flux_git_owner     = var.flux_git_owner
   flux_git_repo      = var.flux_git_repo

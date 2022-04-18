@@ -1,3 +1,7 @@
+variable "apex_domain" {
+  type = string
+}
+
 variable "environment" {
   type = string
 }
