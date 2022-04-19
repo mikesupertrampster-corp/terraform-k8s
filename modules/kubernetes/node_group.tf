@@ -57,4 +57,8 @@ resource "aws_eks_node_group" "node_group" {
   }
 
   depends_on = [aws_iam_role_policy_attachment.node_group]
+
+  lifecycle {
+    ignore_changes = [scaling_config.0.desired_size]
+  }
 }

@@ -10,6 +10,12 @@ data "aws_security_group" "alb" {
   name = "alb"
 }
 
+data "aws_security_group" "eks" {
+  tags = {
+    "aws:eks:cluster-name" = aws_eks_cluster.eks.name
+  }
+}
+
 data "aws_lb" "alb" {
   name = var.environment
 }
