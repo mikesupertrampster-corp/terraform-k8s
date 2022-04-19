@@ -41,7 +41,7 @@ data "aws_iam_policy_document" "autoscaler" {
       "autoscaling:SetDesiredCapacity",
       "autoscaling:TerminateInstanceInAutoScalingGroup",
     ]
-    resources = data.aws_autoscaling_groups.node_group.arns
+    resources = ["*"]
   }
 }
 
