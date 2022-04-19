@@ -39,6 +39,7 @@ resource "aws_eks_node_group" "node_group" {
   node_group_name = each.key
   node_role_arn   = aws_iam_role.node_group.arn
   subnet_ids      = each.value
+  capacity_type   = "SPOT"
 
   scaling_config {
     desired_size = 1
@@ -49,6 +50,10 @@ resource "aws_eks_node_group" "node_group" {
   remote_access {
     ec2_ssh_key               = var.keypair
     source_security_group_ids = []
+  }
+
+  tags = {
+    "k8s.io/cluster-autoscaler/enabled" = true
   }
 
   depends_on = [aws_iam_role_policy_attachment.node_group]

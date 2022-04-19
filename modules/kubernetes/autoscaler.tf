@@ -6,7 +6,7 @@ data "aws_iam_policy_document" "oidc" {
     condition {
       test     = "StringEquals"
       variable = "${replace(aws_iam_openid_connect_provider.eks_oidc.url, "https://", "")}:sub"
-      values   = ["system:serviceaccount:kube-system:cluster-autoscaler"]
+      values   = ["system:serviceaccount:kube-system:autoscaler-aws-cluster-autoscaler"]
     }
 
     principals {
@@ -29,6 +29,9 @@ data "aws_iam_policy_document" "autoscaler" {
       "autoscaling:DescribeLaunchConfigurations",
       "autoscaling:DescribeTags",
       "ec2:DescribeLaunchTemplateVersions",
+      "ec2:DescribeInstanceTypeOfferings",
+      "ec2:DescribeInstanceTypes",
+      "eks:DescribeNodegroup"
     ]
     resources = ["*"]
   }
@@ -38,12 +41,7 @@ data "aws_iam_policy_document" "autoscaler" {
       "autoscaling:SetDesiredCapacity",
       "autoscaling:TerminateInstanceInAutoScalingGroup",
     ]
-    resources = ["*"]
-    condition {
-      test     = "StringEquals"
-      variable = "aws:ResourceTag/k8s.io/cluster/${aws_eks_cluster.eks.name}"
-      values   = ["owned"]
-    }
+    resources = data.aws_autoscaling_groups.node_group.arns
   }
 }
 
@@ -51,16 +49,4 @@ resource "aws_iam_role_policy" "autoscaler" {
   name   = "autoscaling"
   role   = aws_iam_role.autoscaler.id
   policy = data.aws_iam_policy_document.autoscaler.json
-}
-
-data "aws_iam_policy_document" "assume" {
-  statement {
-    actions   = ["sts:AssumeRoleWithWebIdentity"]
-    resources = [aws_iam_role.autoscaler.arn]
-  }
-}
-
-resource "aws_iam_role_policy" "assume" {
-  role   = aws_iam_role.eks.id
-  policy = data.aws_iam_policy_document.assume.json
 }

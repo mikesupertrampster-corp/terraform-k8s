@@ -33,3 +33,10 @@ data "aws_iam_policy" "eks" {
   for_each = toset(["AmazonEKSClusterPolicy"])
   name     = each.key
 }
+
+data "aws_autoscaling_groups" "node_group" {
+  filter {
+    name   = "tag:eks:cluster-name"
+    values = [aws_eks_cluster.eks.name]
+  }
+}
