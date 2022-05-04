@@ -45,4 +45,6 @@ data "aws_autoscaling_groups" "node_group" {
     name   = "tag:eks:cluster-name"
     values = [aws_eks_cluster.eks.name]
   }
+
+  depends_on = [aws_eks_node_group.node_group]
 }
