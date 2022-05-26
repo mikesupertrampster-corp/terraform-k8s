@@ -47,12 +47,3 @@ resource "aws_security_group_rule" "ingress" {
   source_security_group_id = data.aws_security_group.alb.id
   type                     = "ingress"
 }
-
-// Note: Requires commenting out to begin with.
-#resource "aws_autoscaling_attachment" "node_group" {
-#  for_each               = toset(data.aws_autoscaling_groups.node_group.names)
-#  autoscaling_group_name = each.value
-#  lb_target_group_arn    = aws_lb_target_group.ingress.arn
-#
-#  depends_on = [aws_eks_node_group.node_group]
-#}

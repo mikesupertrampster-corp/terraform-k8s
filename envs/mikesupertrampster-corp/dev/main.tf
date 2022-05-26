@@ -27,4 +27,5 @@ module "bootstrap" {
   flux_git_owner = var.flux_git_owner
   flux_git_repo  = var.flux_git_repo
   flux_git_url   = var.flux_git_url
+  target_group   = module.kubernetes.target_group
 }
