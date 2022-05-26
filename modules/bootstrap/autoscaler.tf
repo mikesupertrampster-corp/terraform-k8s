@@ -17,7 +17,7 @@ data "aws_iam_policy_document" "oidc" {
 }
 
 resource "aws_iam_role" "autoscaler" {
-  name               = "${title(aws_eks_cluster.eks.name)}ClusterAutoscaler"
+  name               = "${title(var.cluster.name)}ClusterAutoscaler"
   assume_role_policy = data.aws_iam_policy_document.oidc.json
 }
 
